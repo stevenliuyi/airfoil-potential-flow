@@ -51,7 +51,7 @@ boundary.points <- function(four.digit, n) {
     #
     # Args:
     #   four.digit: a string represents a NACA 4-digit airfoil
-    #   n: number of boundary points (should be an even number)
+    #   n: number of boundary points/panels (should be an even number)
     #
     # Return:
     #   two vectors containing x and y coordinates of the boundary points
@@ -67,7 +67,7 @@ boundary.points <- function(four.digit, n) {
     # solve xU = xc - yt * sin(theta) for xc
     xc.upper <- sapply(x.coordinates, function(x) {
         r <- uniroot(function(xc) xc - yt(t,xc) * sin(atan(dyc.dx(m,p,xc)))
-                     - x, c(0, 1))
+                     - x, lower=0, upper=1)
         r$root
     })
     

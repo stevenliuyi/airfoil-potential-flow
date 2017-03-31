@@ -130,7 +130,9 @@ panel.method <- function(four.digit, n, alpha) {
     # omit when x > 0.995 because of numerical instability in this region
     sub <- x.control < 0.995
     
-    results <- list("x" = x.control[sub],
+    results <- list("x.boundary" = x.boundary,
+                    "y.boundary" = y.boundary,
+                    "x" = x.control[sub],
                     "y" = y.control[sub],
                     "theta" = theta[sub],
                     "vel" = vel[sub],

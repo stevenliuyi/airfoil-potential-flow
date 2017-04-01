@@ -21,7 +21,7 @@ yc <- function(m, p, x) {
     # Return:
     #  y_c of the camber line
     
-    if (x <= p) {
+    if (x < p) {
         return(m/p^2*(2*p*x-x^2))
     } else {
         return(m/(1-p)^2*(1-2*p+2*p*x-x^2))
@@ -39,7 +39,7 @@ dyc.dx <- function(m, p, x) {
     # Return:
     #  dy_c/dx where y_c is the camber line equation
     
-    if (x <= p) {
+    if (x < p) {
         return(2*m/p^2*(p-x))
     } else {
         return(2*m/(1-p)^2*(p-x))

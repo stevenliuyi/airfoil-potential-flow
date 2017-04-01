@@ -16,24 +16,35 @@ shinyUI(fluidPage(
                         min=12, max=200, step=2, value=48),
             sliderInput("alpha", "Angle of attack:",
                         min=-20, max=40, step=1, value=8)
-    ),
+        ),
 
-    mainPanel(
-        plotlyOutput("plot"),
-        tags$div(
-            style='margin-top:20px',
-            fluidRow(
-                column(8,
-                       tableOutput("table")),
-                column(4,
-                       selectInput("quantity", label = NULL,
-                                      choices = c("pressure coefficient",
-                                                  "velocity",
-                                                  "local circulation")),
-                       checkboxInput("annotation", "Show annotations")
+        mainPanel(
+            plotlyOutput("plot"),
+            tags$div(
+                style='margin-top:20px',
+                fluidRow(
+                    column(8,
+                           tableOutput("table")),
+                    column(4,
+                           selectInput("quantity", label = NULL,
+                                          choices = c("pressure coefficient",
+                                                      "velocity",
+                                                      "local circulation")),
+                           checkboxInput("annotation", "Show annotations")
+                    )
                 )
             )
         )
+    ),
+    
+    tags$div(
+        style='text-align: center; color: grey',
+        HTML("Steven Liu&nbsp;&nbsp;2017&nbsp;&nbsp;"),
+        tags$a(href="https://github.com/stevenliuyi/",
+               title="my GitHub",
+               icon("github")),
+        tags$a(href="https://github.com/stevenliuyi/airfoil-potential-flow",
+               title="source code for this app",
+               icon("code-fork"))
     )
-  )
 ))

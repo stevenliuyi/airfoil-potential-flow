@@ -20,12 +20,18 @@ shinyUI(fluidPage(
 
     mainPanel(
         plotlyOutput("plot"),
-        fluidRow(
-            column(8),
-            column(4,
-                   selectInput("quantity", label = NULL,
-                                  choices = c("pressure coefficient", "velocity")),
-                   checkboxInput("annotation", "Show annotations")
+        tags$div(
+            style='margin-top:20px',
+            fluidRow(
+                column(8,
+                       tableOutput("table")),
+                column(4,
+                       selectInput("quantity", label = NULL,
+                                      choices = c("pressure coefficient",
+                                                  "velocity",
+                                                  "local circulation")),
+                       checkboxInput("annotation", "Show annotations")
+                )
             )
         )
     )

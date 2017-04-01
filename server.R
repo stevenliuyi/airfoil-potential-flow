@@ -28,12 +28,16 @@ shinyServer(function(input, output) {
         if (input$quantity == 'pressure coefficient')
         {
             y <- results$cp
-            name <- 'Cp'
+            name <- paste0('C',tags$sub('p'))
             yrange <- c(1,-4)
         } else if (input$quantity == 'velocity') {
             y <- results$vel
             name <- 'V'
             yrange <- c(-1,4)
+        } else if (input$quantity == 'local circulation') {
+            y <- results$gamma
+            name <- 'γ'
+            yrange <- c(-2,8)
         }
         
         # deplicate the first elements to the last
@@ -58,6 +62,9 @@ shinyServer(function(input, output) {
                       fill = FALSE,
                       text = paste0(name, ' = ', round(y,3)),
                       hoverinfo = 'text') %>%
+            add_markers( # center of pressure
+                    x=c(round(results$center.p,3)), y=c(0),
+                    name='CP', marker=list(color='black')) %>%
             layout(title = paste0('NASA ', four.digits),
                    titlefont = list(color = 'darkgrey'),
                    xaxis = list(range = c(0,1),
@@ -97,6 +104,10 @@ shinyServer(function(input, output) {
                     x=0.1*cos(alpha), y=0.1*sin(alpha),
                     text='angle of attack', xref='x', yref='y',
                     showarrow = TRUE, arrowhead = 4, ax=20, ay=-40, opacity=.5) %>%
+                add_annotations( # center of pressure annotation
+                    x=results$center.p, y=0,
+                    text=paste0('center of pressure'), xref='x', yref='y',
+                    showarrow = TRUE, arrowhead = 4, ax=-20, ay=40, opacity=.5) %>%
                 layout( # angle of attack line
                     shapes = list(type='line', x0=0, y0=0,
                                   x1=0.2*cos(alpha), y1=0.2*sin(alpha),
@@ -105,4 +116,17 @@ shinyServer(function(input, output) {
         
         plotly
     })
+    
+    output$table <- renderTable({
+        results <- panel.method.outputs()$results
+        properties <- c('lift coefficient',
+                        'leading edge moment coefficient',
+                        'center of pressure',
+                        'critical Mach number')
+        values <- c(results$cl,
+                    results$cmle,
+                    results$center.p,
+                    results$mcr)
+        data.frame(p=properties, v=values)
+    }, colnames = FALSE, hover = TRUE, digits = 4)
 })

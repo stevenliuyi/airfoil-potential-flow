@@ -82,8 +82,8 @@ panel.method <- function(four.digit, n, alpha) {
     #   alpha: angle of attack (unit: degree)
     #
     # Return:
-    #   local dimensionless circulation, dimensionless velocity
-    #   and pressure coefficients along the airfoil
+    #   x and y coordinates, dimensionless velocity, pressure coefficients
+    #   and other aerodynamic quantities along the airfoil
     
     source("./naca.airfoil.R")
     
@@ -124,8 +124,31 @@ panel.method <- function(four.digit, n, alpha) {
     # compute local dimensionless velocites
     vel <- abs(cos(theta - alpha*pi/180) + as.vector(at %*% gamma))
       
-    # compute pressure coefficnet
+    # compute pressure coefficent
     cp <- 1 - vel^2
+    
+    # compute lift coefficient
+    # note that gamma is dimensionless circulation density
+    # gamma = gamma2[local circulation] / (2*pi) * V_infty
+    gamma2 <- (gamma[1:n] + gamma[2:(n+1)]) * pi
+    cl <- sum(gamma2*s) * 2
+    
+    # compute leading edge moment coefficient
+    cmle <- -sum(x.control*gamma2*s) * 2
+    
+    # compute center of pressure
+    center.p <- - cmle / (cl * cos(alpha*pi/180))
+    
+    # compute critical angle of attack
+    vel0 <- abs(cos(theta) + as.vector(at %*% gamma))
+    cp0 <- 1 - vel0^2 # cp at zero angle of attack
+    cp0.min <- min(cp0)
+    ga <- 1.4 # heat capacity ratio
+    mcr <- uniroot(function(m)
+        cp0.min / sqrt(1-m^2)
+        - 2*(( ((ga-1)*m^2+2) / (ga+1) )^(ga/(ga-1))-1) / (ga*m^2),
+        lower = 0, upper = 1)
+    mcr <- mcr$root
     
     # omit when x > 0.995 because of numerical instability in this region
     sub <- x.control < 0.995
@@ -136,6 +159,11 @@ panel.method <- function(four.digit, n, alpha) {
                     "y" = y.control[sub],
                     "theta" = theta[sub],
                     "vel" = vel[sub],
-                    "cp" = cp[sub])
+                    "cp" = cp[sub],
+                    "gamma" = gamma2[sub],
+                    "cl" = cl,
+                    "cmle" = cmle,
+                    "center.p" = center.p,
+                    "mcr" = mcr)
     return(results)
 }

@@ -1,4 +1,5 @@
 library(shiny)
+library(plotly)
 
 shinyUI(fluidPage(
     titlePanel("NACA 4-digit Airfoil"),
@@ -18,8 +19,14 @@ shinyUI(fluidPage(
     ),
 
     mainPanel(
-        textOutput("title"),
-        plotlyOutput("plot")
+        plotlyOutput("plot"),
+        fluidRow(
+            column(8),
+            column(4,
+                   selectInput("quantity", label = NULL,
+                                  choices = c("pressure coefficient", "velocity"))
+            )
+        )
     )
   )
 ))

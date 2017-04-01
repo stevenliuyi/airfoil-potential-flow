@@ -27,24 +27,36 @@ shinyServer(function(input, output) {
                            color = 'lightgrey')
         
         x <- results$x
-        cp <- results$cp
+        
+        if (input$quantity == 'pressure coefficient')
+        {
+            y <- results$cp
+            name <- 'Cp'
+            yrange <- c(1,-4)
+        } else if (input$quantity == 'velocity') {
+            y <- results$vel
+            name <- 'V'
+            yrange <- c(-1,4)
+        }
         
         # deplicate the first elements to the last
         x <- c(x, x[1])
-        cp <- c(cp, cp[1])
+        y <- c(y, y[1])
         
-        plot_ly(x = results$x.boundary, 
-                y = results$y.boundary,
+        plot_ly(x = round(results$x.boundary, 3), 
+                y = round(results$y.boundary, 3),
                 type = 'scatter',
                 mode = 'lines',
                 name = 'airfoil', 
                 fill = 'tozeroy') %>%
-            add_trace(x = x,
-                      y = cp,
+            add_trace(x = round(x,3),
+                      y = round(y,3),
                       mode = 'lines+markers',
-                      name = 'Cp',
+                      name = name,
                       yaxis = 'y2',
-                      fill = FALSE) %>%
+                      fill = FALSE,
+                      text = paste0(name, ' = ', round(y,3)),
+                      hoverinfo = 'text') %>%
             layout(title = paste0('NASA ', four.digits),
                    titlefont = list(color = 'darkgrey'),
                    xaxis = list(range = c(0,1),
@@ -54,8 +66,8 @@ shinyServer(function(input, output) {
                                 title = 'y/c',
                                 titlefont = title.font),
                    yaxis2 = list(overlaying = 'y',
-                                 range = c(1,-4),
-                                 title = 'Cp',
+                                 range = yrange,
+                                 title = name,
                                  titlefont = title.font,
                                  side = 'right'),
                    showlegend = FALSE,

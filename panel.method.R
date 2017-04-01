@@ -122,7 +122,7 @@ panel.method <- function(four.digit, n, alpha) {
     gamma <- solve(an, rhs)
     
     # compute local dimensionless velocites
-    vel <- cos(theta - alpha*pi/180) + as.vector(at %*% gamma)
+    vel <- abs(cos(theta - alpha*pi/180) + as.vector(at %*% gamma))
       
     # compute pressure coefficnet
     cp <- 1 - vel^2

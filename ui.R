@@ -15,7 +15,7 @@ shinyUI(fluidPage(
             sliderInput("num", "Number of panels:",
                         min=12, max=200, step=2, value=48),
             sliderInput("alpha", "Angle of attack:",
-                        min=-20, max=20, step=1, value=8)
+                        min=-20, max=40, step=1, value=8)
     ),
 
     mainPanel(
@@ -24,7 +24,8 @@ shinyUI(fluidPage(
             column(8),
             column(4,
                    selectInput("quantity", label = NULL,
-                                  choices = c("pressure coefficient", "velocity"))
+                                  choices = c("pressure coefficient", "velocity")),
+                   checkboxInput("annotation", "Show annotations")
             )
         )
     )
